@@ -13,8 +13,10 @@ function updateStatus(isConnected) {
     connected = isConnected;
     const connectBtn = document.getElementById('connect');
     const flashBtn = document.getElementById('flash');
+    const tplinkBtn = document.getElementById('flash-tplink');
 
     flashBtn.disabled = !isConnected;
+    tplinkBtn.disabled = !isConnected;
 
     if (isConnected) {
         connectBtn.textContent = 'Disconnect';
@@ -92,14 +94,21 @@ document.getElementById('flash').addEventListener('click', async () => {
     }
 
     const flashButton = document.getElementById('flash');
+    const flashTplinkButton = document.getElementById('flash-tplink');
     const connectBtn = document.getElementById('connect');
 
     flashButton.disabled = true;
     flashButton.textContent = 'Flashing...';
+    flashTplinkButton.disabled = true;
     connectBtn.disabled = true;
 
     try {
-        const files = ['bin_files/bootloader.bin', 'bin_files/partitions.bin', 'bin_files/boot_app0.bin', 'bin_files/firmware.bin'];
+        const files = [
+            'bin_files/general/bootloader.bin', 
+            'bin_files/general/partitions.bin', 
+            'bin_files/general/boot_app0.bin', 
+            'bin_files/general/firmware.bin'
+        ];
         const addresses = [0x1000, 0x8000, 0xE000, 0x10000];
         const fileArray = [];
 
@@ -133,6 +142,70 @@ document.getElementById('flash').addEventListener('click', async () => {
     }
 
     flashButton.textContent = 'Flash Firmware';
+    flashButton.disabled = false;
+    flashTplinkButton.disabled = false;
+    connectBtn.disabled = false;
+});
+
+
+
+// FLASH TPLINK BUTTON
+document.getElementById('flash-tplink').addEventListener('click', async () => {
+    if (!connected || !esploader) {
+        appendLog("✗ Not connected!");
+        return;
+    }
+
+    const flashTplinkButton = document.getElementById('flash-tplink');
+    const flashButton = document.getElementById('flash');
+    const connectBtn = document.getElementById('connect');
+
+    flashTplinkButton.disabled = true;
+    flashTplinkButton.textContent = 'Flashing Tplink...';
+    flashButton.disabled = true;
+    connectBtn.disabled = true;
+
+    try {
+        const files = [
+            'bin_files/tplink/bootloader.bin',
+            'bin_files/tplink/partitions.bin',
+            'bin_files/tplink/boot_app0.bin',
+            'bin_files/tplink/firmware.bin'
+        ];
+        const addresses = [0x1000, 0x8000, 0xE000, 0x10000];
+        const fileArray = [];
+
+        for (let i = 0; i < files.length; i++) {
+            appendLog(`Loading ${files[i]}...`);
+            const resp = await fetch(files[i]);
+            if (!resp.ok) throw new Error(`Failed to load ${files[i]}`);
+            fileArray.push({
+                data: await blobToString(await resp.blob()),
+                address: addresses[i]
+            });
+        }
+
+        appendLog("Flashing Tplink firmware...");
+
+        await esploader.writeFlash({
+            fileArray,
+            flashSize: "keep",
+            eraseAll: true,
+            compress: true,
+            reportProgress: (idx, written, total) => {
+                const percent = ((written / total) * 100).toFixed(1);
+                appendLog(`${files[idx]}: ${percent}%`);
+            }
+        });
+
+        appendLog("✓ Tplink firmware flashed successfully!\n");
+
+    } catch (err) {
+        appendLog(`✗ Flash Tplink failed: ${err.message}`);
+    }
+
+    flashTplinkButton.textContent = 'Flash Tplink';
+    flashTplinkButton.disabled = false;
     flashButton.disabled = false;
     connectBtn.disabled = false;
 });
