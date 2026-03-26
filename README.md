@@ -4,6 +4,7 @@ A web-based tool to flash the MavESP8266 firmware onto ESP32-WROOM boards direct
 
 Try it online: https://nipundharmarathne.github.io/mavesp8266_flasher_for_esp32/
 
+<<<<<<< HEAD
 
 ## Usage
 
@@ -11,6 +12,19 @@ Try it online: https://nipundharmarathne.github.io/mavesp8266_flasher_for_esp32/
 2. Click Connect and select your ESP32-WROOM serial port.
 3. Once connected, click Flash Firmware to upload the firmware.
 4. Monitor the log panel for progress and completion messages.
+=======
+If you find this tool helpful, consider supporting its development:
+
+<p>
+  <a href="https://github.com/sponsors/NipunDharmarathne" target="_blank">
+    <img src="https://img.shields.io/badge/GitHub-Sponsor-181717?logo=github&style=for-the-badge" alt="GitHub Sponsors" width="150" style="vertical-align:middle;" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://buymeacoffee.com/nipundharmarathne" target="_blank">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" width="150" style="vertical-align:middle;" />
+  </a>
+</p>
+>>>>>>> cd319dbb149a8d15923bba58ac87ed8e732c7bb6
 
 
 ## Features
